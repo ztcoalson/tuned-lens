@@ -63,8 +63,9 @@ notebooks = [
 [project.scripts]
 tuned-lens = "tuned_lens.__main__:main"
 
-[tool.setuptools.packages.find]
-namespaces = false
+[tool.setuptools]
+packages = ["tuned_lens"]
+package-dir = {"" = "."}
 
 [tool.ruff]
 select = ["E", "F", "D", "I"]
