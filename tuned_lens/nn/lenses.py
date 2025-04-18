@@ -325,6 +325,7 @@ class TunedLens(Lens):
         model: PreTrainedModel,
         layer: int,
         input_ids: th.Tensor,
+        eos_token: int,
         do_sample: bool = True,
         temp: float = 1.0,
         max_new_tokens: int = 100,
@@ -343,15 +344,13 @@ class TunedLens(Lens):
         Returns:
             The prompt concatenated with the newly generated tokens.
         """
-        eos_token = model.generation_config.eos_token_id
-
         tokens = input_ids
         if tokens.ndim == 1:
             tokens = tokens.unsqueeze(0)
         batch, prompt_len = tokens.shape
         del prompt_len
         past_key_values = None
-        done = th.zeros(batch, dtype=th.bool)
+        done = th.zeros(batch, dtype=th.bool).to(tokens.device)
 
         for _ in range(max_new_tokens):
             output = model(
